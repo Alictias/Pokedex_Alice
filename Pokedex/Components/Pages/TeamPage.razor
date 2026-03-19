@@ -37,7 +37,7 @@
                         @AppConstants.MinLv-@AppConstants.MaxLv
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="form-label">Apelido</label>
                     <InputText @bind-Value="newMember.Nickname" class="form-control" />
                 </div>
@@ -50,7 +50,7 @@
                         <option>Feminino</option>
                     </InputSelect>
                 </div>
-                <div class="col-md-3 d-flex align-items-end">
+                <div class="col-md-2 d-flex align-items-end">
                     <button class="btn btn-primary w-100" type="submit">Adicionar</button>
                 </div>
             </div>
@@ -76,7 +76,7 @@
                 <div class="card h-100 shadow-sm">
                     @if (basic is not null)
                     {
-                        <img src="@basic.ImageUrl" class="card-img-top" alt="@basic.Name" />
+                        <img src="@basic.ImageUrl" class="pokemonTeam-img" alt="@basic.Name" />
                     }
                     else
                     {

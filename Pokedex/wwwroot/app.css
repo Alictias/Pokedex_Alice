@@ -6,6 +6,24 @@ a, .btn-link {
     color: #006bb7;
 }
 
+.pokemonTeam-img{
+    height: 10px;
+    width: 100%;
+    object-fit:contain;
+    display:block;
+    margin: 0 auto;
+    background-color: #f8f9fa; /* leve fundo */
+}
+
+.pokedexPage-img{
+    height: 10px;
+    width: 100%;
+    object-fit:contain;
+    display:block;
+    margin: 0 auto;
+    background-color: #f8f9fa; /* leve fundo */
+}
+
 .btn-primary {
     color: #fff;
     background-color: #1b6ec2;
