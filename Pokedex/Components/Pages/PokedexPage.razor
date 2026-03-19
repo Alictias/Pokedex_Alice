@@ -150,8 +150,8 @@
         else Show("warning", error ?? "Não foi possível adicionar.");
     }
 
-    // --- modal ---
-    private async Task OpenModal(int id)
+    // --- modal --- teste para selecionar info dos pokemons
+    @* private async Task OpenModal(int id)
     {
         selectedPokemon = await Poke.GetFullAsync(id); // método que busca detalhes completos
         showModal = true;
@@ -161,7 +161,7 @@
     {
         showModal = false;
         selectedPokemon = null;
-    }
+    } *@
 
     // --- alertas ---
     private void Show(string type, string msg) { alertType = type; alertMsg = msg; }
