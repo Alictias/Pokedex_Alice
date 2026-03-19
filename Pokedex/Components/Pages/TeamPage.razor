@@ -1,6 +1,6 @@
 @page "/team"
 @rendermode Microsoft.AspNetCore.Components.Web.RenderMode.InteractiveServer
-
+@* @rendermode InteractiveServer *@
 
 @using System.Linq
 @using Microsoft.AspNetCore.Components
@@ -29,6 +29,13 @@
                     <label class="form-label">Pokémon (ID)</label>
                     <InputNumber @bind-Value="newMember.PokemonId" class="form-control" />
                     <div class="form-text">@AppConstants.MinId-@AppConstants.MaxId</div>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Nível</label>
+                    <InputNumber @bind-Value="newMember.PokemonLevel" class="form-control" />
+                    <div class="form-text">
+                        @AppConstants.MinLv-@AppConstants.MaxLv
+                    </div>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Apelido</label>
@@ -77,6 +84,7 @@
                     }
                     <div class="card-body">
                         <h5 class="card-title">#@t.PokemonId @basic?.Name</h5>
+                        <small class="text-muted">Nível: @t.PokemonLevel</small>
                         <p class="mb-1">
                             @if (basic is not null)
                             {
@@ -88,6 +96,9 @@
                         </p>
                         <EditForm Model="@t" OnValidSubmit="@(() => UpdateAsync(t))">
                             <div class="row g-2">
+                                <div class="col-4">
+                                    <InputNumber @bind-Value="t.PokemonLevel" class="form-control" aria-placeholder="Nível" />
+                                </div>
                                 <div class="col-7">
                                     <InputText @bind-Value="t.Nickname" class="form-control" placeholder="Apelido" />
                                 </div>
@@ -113,7 +124,10 @@
 
 @code {
     private List<TeamMember>? list;
-    private TeamMember newMember = new();
+    private TeamMember newMember = new()
+    {
+        PokemonLevel=50
+    };
     private string? alertMsg; private string alertType = "info";
     private Dictionary<int, PokemonBasic> cache = new();
 
@@ -142,7 +156,9 @@
         if (ok)
         {
             Show("success", "Adicionado!");
-            newMember = new TeamMember();
+            newMember = new TeamMember(){
+                PokemonLevel=50
+            };
             await LoadAsync();
         }
         else Show("warning", error ?? "Erro ao adicionar.");

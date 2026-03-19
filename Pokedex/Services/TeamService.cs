@@ -28,6 +28,10 @@ public class TeamService : ITeamService
         if (await _db.Team.CountAsync() >= 6)
             return (false, "O time já tem 6 Pokémon.");
 
+
+        if (m.PokemonLevel < AppConstants.MinLv || m.PokemonLevel > AppConstants.MaxLv)
+        return (false, $"O nível deve estar entre {AppConstants.MinLv} e {AppConstants.MaxLv}.");
+
         m.Nickname = string.IsNullOrWhiteSpace(m.Nickname) ? null : m.Nickname.Trim();
         _db.Team.Add(m);
         await _db.SaveChangesAsync();
@@ -38,8 +42,13 @@ public class TeamService : ITeamService
     {
         var e = await _db.Team.FindAsync(m.Id);
         if (e is null) return (false, "Registro não encontrado.");
+        
+        if (m.PokemonLevel < AppConstants.MinLv || m.PokemonLevel > AppConstants.MaxLv)
+        return (false, $"O nível deve estar entre {AppConstants.MinLv} e {AppConstants.MaxLv}.");
+
         e.Nickname = string.IsNullOrWhiteSpace(m.Nickname) ? null : m.Nickname.Trim();
         e.Gender = m.Gender;
+        e.PokemonLevel = m.PokemonLevel;
         await _db.SaveChangesAsync();
         return (true, null);
     }

@@ -13,8 +13,8 @@ public class TeamMember
     public string? Nickname { get; set; }
 
     
-    [Range(AppConstants.minLv, AppConstants.maxLv, ErrorMessage = "O Nível deve estar entre 1 e 100")]
-    public int PokemonLevel { get; set; }
+    [Range(AppConstants.MinLv, AppConstants.MaxLv, ErrorMessage = "O Nível deve estar entre 1 e 100")]
+    public int PokemonLevel { get; set; } = 50;
 
     [RegularExpression("Masculino|Feminino|Desconhecido", ErrorMessage = "Gênero inválido.")]
     public string Gender { get; set; } = "Desconhecido";
