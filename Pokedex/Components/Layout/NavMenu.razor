@@ -1,0 +1,35 @@
+﻿@* Components/Layout/NavMenu.razor *@
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">Pokedex</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" aria-label="Alternar navegação" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="nav flex-column" aria-label="Menu de navegação">
+
+        <!-- Home (padrão do template) -->
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+
+        <!-- Pokédex (NOVO) -->
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/pokedex">
+                <span class="bi bi-collection" aria-hidden="true"></span> Pokédex
+            </NavLink>
+        </div>
+
+        <!-- Time (NOVO) -->
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/team">
+                <span class="bi bi-people-fill" aria-hidden="true"></span> Time (até 6)
+            </NavLink>
+        </div>
+
+    </nav>
+</div>
