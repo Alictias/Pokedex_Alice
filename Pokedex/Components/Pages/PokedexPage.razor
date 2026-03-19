@@ -18,13 +18,13 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="input-group" style="max-width: 380px;">
-            <span class="input-group-text">Filtro</span>
-            <input class="form-control" @bind="filter" @bind:event="oninput" placeholder="Nome contém...">
+            <input class="form-control" @bind="searchText" placeholder="Nome contém..." />
+            <button class="btn btn-primary" @onclick="() => ApplySearch(true)">Buscar</button>
         </div>
 
         <div class="btn-group" role="group" aria-label="Paginação">
             <button class="btn btn-outline-secondary" @onclick="PrevPage" disabled="@(!CanPrev)">◀</button>
-            <span class="btn btn-outline-dark disabled">Página @pageIndex+1 / @TotalPages</span>
+            <span class="btn btn-outline-dark disabled">Página @pageIndex / @TotalPages</span>
             <button class="btn btn-outline-secondary" @onclick="NextPage" disabled="@(!CanNext)">▶</button>
         </div>
     </div>
@@ -68,68 +68,102 @@
         <div class="alert alert-@alertType mt-3">@alertMsg</div>
     }
 
-    @code {
-        // estado da página
-        private string filter = "";
-        private int pageSize = 24;     // quantidade por página
-        private int pageIndex = 0;     // página atual (0-based)
-        private bool loading = true;   // flag de carregamento
-        private List<PokemonBasic> pageData = new(); // dados prontos p/ render
-        private string? alertMsg; private string alertType = "info";
+   @code {
+    // --- estado geral ---
+    private string searchText = "";
+    private int pageSize = 24;
+    private int pageIndex = 1;
+    private bool loading = true;
 
-        // helpers de paginação
-        private int TotalPages => (int)Math.Ceiling(AppConstants.MaxId / (double)pageSize);
-        private bool CanPrev => pageIndex > 0;
-        private bool CanNext => pageIndex < TotalPages - 1;
+    // --- modal ---
+    private bool showModal = false;
+    //private PokemonFull? selectedPokemon;
 
-        protected override async Task OnInitializedAsync()
+    // --- dados ---
+    private List<PokemonBasic> allData = new(); // todos os Pokémon
+    private List<PokemonBasic> pageData = new(); // página atual
+
+    // --- alertas ---
+    private string? alertMsg;
+    private string alertType = "info";
+
+    // --- helpers de paginação ---
+    private int TotalPages => (int)Math.Ceiling((double)FilteredData.Count() / pageSize);
+    private bool CanPrev => pageIndex > 1;
+    private bool CanNext => pageIndex < TotalPages;
+
+    // --- lista filtrada ---
+    private IEnumerable<PokemonBasic> FilteredData =>
+        string.IsNullOrWhiteSpace(searchText)
+            ? allData
+            : allData.Where(p => p.Name.Contains(searchText.Trim(), StringComparison.OrdinalIgnoreCase));
+
+    // --- inicialização ---
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAllData();
+    }
+
+    // --- carregar todos os Pokémon ---
+    private async Task LoadAllData()
+    {
+        loading = true;
+
+        if (!allData.Any())
         {
-            await LoadPage();
-        }
+            var ids = Enumerable.Range(AppConstants.MinId, AppConstants.MaxId - AppConstants.MinId + 1);
+            const int parallel = 8;
 
-        private async Task LoadPage()
-        {
-            loading = true;
-            pageData.Clear();
-
-            // cálculo de faixa da página
-            var start = pageIndex * pageSize + AppConstants.MinId;
-            var end = Math.Min(start + pageSize - 1, AppConstants.MaxId);
-
-            // Busca em LOTE com paralelismo controlado (respeitoso com a PokeAPI)
-            var ids = Enumerable.Range(start, end - start + 1);
-            const int parallel = 8; // bom equilíbrio entre velocidade e fair use
             foreach (var batch in ids.Chunk(parallel))
             {
                 var tasks = batch.Select(id => Poke.GetBasicAsync(id));
                 var results = await Task.WhenAll(tasks);
-                pageData.AddRange(results.Where(r => r is not null)!.Select(r => r!));
+                allData.AddRange(results.Where(r => r is not null)!);
             }
-
-            ApplyFilter();
-            loading = false;
-            StateHasChanged();
         }
 
-        private void ApplyFilter()
-        {
-            if (string.IsNullOrWhiteSpace(filter)) return;
-            var f = filter.Trim();
-            pageData = pageData
-                .Where(p => p.Name.Contains(f, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-        }
-
-        private async Task AddToTeam(int id)
-        {
-            var (ok, error) = await Team.AddAsync(new TeamMember { PokemonId = id });
-            if (ok) Show("success", "Adicionado ao time!");
-            else Show("warning", error ?? "Não foi possível adicionar.");
-        }
-
-        private void PrevPage() { if (CanPrev) { pageIndex--; _ = LoadPage(); } }
-        private void NextPage() { if (CanNext) { pageIndex++; _ = LoadPage(); } }
-
-        private void Show(string type, string msg) { alertType = type; alertMsg = msg; }
+        ApplySearch();
+        loading = false;
+        StateHasChanged();
     }
+
+    // --- aplicar filtro e paginação ---
+    private void ApplySearch(bool resetPage = true)
+    {
+        if (resetPage) pageIndex = 1;
+
+        pageData = FilteredData
+            .Skip((pageIndex - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
+
+    // --- navegação ---
+    private void PrevPage() { if (CanPrev) { pageIndex--; ApplySearch(false); } }
+    private void NextPage() { if (CanNext) { pageIndex++; ApplySearch(false); } }
+
+    // --- adicionar ao time ---
+    private async Task AddToTeam(int id)
+    {
+        var (ok, error) = await Team.AddAsync(new TeamMember { PokemonId = id });
+        if (ok) Show("success", "Adicionado ao time!");
+        else Show("warning", error ?? "Não foi possível adicionar.");
+    }
+
+    // --- modal ---
+    private async Task OpenModal(int id)
+    {
+        selectedPokemon = await Poke.GetFullAsync(id); // método que busca detalhes completos
+        showModal = true;
+    }
+
+    private void CloseModal()
+    {
+        showModal = false;
+        selectedPokemon = null;
+    }
+
+    // --- alertas ---
+    private void Show(string type, string msg) { alertType = type; alertMsg = msg; }
+}
 </div>

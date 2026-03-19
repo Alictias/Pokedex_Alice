@@ -43,26 +43,58 @@ a, .btn-link {
     background-position: center;
     background-repeat: no-repeat;
     box-sizing: border-box;
+    min-height: 100vh;
 }
 
 .pokedex-page{
-    background-image: url(/images/pokedex-full-background.jpg);
+    background: linear-gradient(to bottom, #fd2036, #ffffff);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     box-sizing: border-box;
+    min-height: 100vh;
 }
 
 .page-home {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;   /* vertical center */
+    align-items: center;       /* horizontal center */
+
+    text-align: center;
     background-image: url(/images/home-bg.jpg);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     box-sizing: border-box;
+    min-height: 100vh;
 }
 
 
-.btn-primary {
+
+
+.btn-primary {.modal-backdrop {
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+
+.modal-center {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1001;
+    max-width: 400px;
+    width: 90%;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 8px;
+}
+
     color: #fff;
     background-color: #1b6ec2;
     border-color: #1861ac;
