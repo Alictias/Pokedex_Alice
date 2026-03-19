@@ -1,4 +1,6 @@
 html, body {
+    margin: 0;
+    padding: 0;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
@@ -7,7 +9,7 @@ a, .btn-link {
 }
 
 .pokemonTeam-img{
-    height: 10px;
+    height: 150px;
     width: 100%;
     object-fit:contain;
     display:block;
@@ -16,13 +18,49 @@ a, .btn-link {
 }
 
 .pokedexPage-img{
-    height: 10px;
+    height: 150px;
     width: 100%;
     object-fit:contain;
     display:block;
     margin: 0 auto;
     background-color: #f8f9fa; /* leve fundo */
 }
+
+.pokeball{
+    width:30px;
+    height: 30px;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.pokemon-logo{
+    vertical-align: middle;
+}
+
+.team-page{
+    background-image: url(/images/team-background.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-sizing: border-box;
+}
+
+.pokedex-page{
+    background-image: url(/images/pokedex-full-background.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-sizing: border-box;
+}
+
+.page-home {
+    background-image: url(/images/home-bg.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-sizing: border-box;
+}
+
 
 .btn-primary {
     color: #fff;
@@ -35,7 +73,7 @@ a, .btn-link {
 }
 
 .content {
-    padding-top: 1.1rem;
+    padding-top:0 !important;
 }
 
 h1:focus {

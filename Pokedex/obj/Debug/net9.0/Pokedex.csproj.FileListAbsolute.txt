@@ -135,6 +135,7 @@ C:\Users\jagaminh\OneDrive - Flex\Desktop\Pokedex_Alice\Pokedex\obj\Debug\net9.0
 C:\Users\jagaminh\OneDrive - Flex\Desktop\Pokedex_Alice\Pokedex\obj\Debug\net9.0\Pokedex.AssemblyInfo.cs
 C:\Users\jagaminh\OneDrive - Flex\Desktop\Pokedex_Alice\Pokedex\obj\Debug\net9.0\Pokedex.csproj.CoreCompileInputs.cache
 C:\Users\jagaminh\OneDrive - Flex\Desktop\Pokedex_Alice\Pokedex\obj\Debug\net9.0\Pokedex.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\jagaminh\OneDrive - Flex\Desktop\Pokedex_Alice\Pokedex\obj\Debug\net9.0\Pokedex.sourcelink.json
 C:\Users\jagaminh\OneDrive - Flex\Desktop\Pokedex_Alice\Pokedex\obj\Debug\net9.0\rjimswa.dswa.cache.json
 C:\Users\jagaminh\OneDrive - Flex\Desktop\Pokedex_Alice\Pokedex\obj\Debug\net9.0\rjsmrazor.dswa.cache.json
 C:\Users\jagaminh\OneDrive - Flex\Desktop\Pokedex_Alice\Pokedex\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json
@@ -198,5 +199,4 @@ C:\Users\jagaminh\OneDrive - Flex\Desktop\Pokedex_Alice\Pokedex\obj\Debug\net9.0
 C:\Users\jagaminh\OneDrive - Flex\Desktop\Pokedex_Alice\Pokedex\obj\Debug\net9.0\Pokedex.pdb
 C:\Users\jagaminh\OneDrive - Flex\Desktop\Pokedex_Alice\Pokedex\obj\Debug\net9.0\Pokedex.genruntimeconfig.cache
 C:\Users\jagaminh\OneDrive - Flex\Desktop\Pokedex_Alice\Pokedex\obj\Debug\net9.0\ref\Pokedex.dll
-C:\Users\jagaminh\OneDrive - Flex\Desktop\Pokedex_Alice\Pokedex\obj\Debug\net9.0\Pokedex.sourcelink.json
-C:\Users\jagaminh\OneDrive - Flex\Desktop\Pokedex_Alice\Pokedex\obj\Debug\net9.0\compressed\jg9hz2utwh-m4piz6f9lu.gz
+C:\Users\jagaminh\OneDrive - Flex\Desktop\Pokedex_Alice\Pokedex\obj\Debug\net9.0\compressed\jg9hz2utwh-ccfi52qkww.gz

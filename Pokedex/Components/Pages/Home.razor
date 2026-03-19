@@ -1,7 +1,24 @@
 ﻿@page "/"
 
 <PageTitle>Home</PageTitle>
+<div class="container-fluid page-home">
+    <h1>Seja Bem Vinda, explore o mundo de <br>
+        <img src="/images/pokemon-logo.png" class="pokemon-logo" /> <br>
 
-<h1>Hello, world!</h1>
-<TeamPage/>
-Welcome to your new app.
+        e construa o seu próprio time! <img src="/images/pokeball.png" class="pokeball" /> <br>
+    </h1>
+
+    <div class="d-flex gap-3 mt-4">
+        <NavLink class="btn btn-primary" href="/pokedex">
+            Ver Pokédex
+        </NavLink>
+
+        <NavLink class="btn btn-success" href="/team">
+            Montar Time
+        </NavLink>
+    </div>
+
+    <p class="mt-3 text-muted">*até geração IV</p>
+
+    Disponível para consulta Pokemon até quarta geração.
+</div>

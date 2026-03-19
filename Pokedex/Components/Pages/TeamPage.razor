@@ -1,182 +1,186 @@
-@page "/team"
-@rendermode Microsoft.AspNetCore.Components.Web.RenderMode.InteractiveServer
-@* @rendermode InteractiveServer *@
 
-@using System.Linq
-@using Microsoft.AspNetCore.Components
-@using Microsoft.AspNetCore.Components.Web
-@using Pokedex.Data
-@using Pokedex.Models
-@using Pokedex.Services
-@inject ITeamService TeamService
-@inject IPokeApiClient Poke
+    @page "/team"
+    @rendermode Microsoft.AspNetCore.Components.Web.RenderMode.InteractiveServer
+    @* @rendermode InteractiveServer *@
 
-<h3 class="mb-3">Meu Time (até 6)</h3>
+    @using System.Linq
+    @using Microsoft.AspNetCore.Components
+    @using Microsoft.AspNetCore.Components.Web
+    @using Pokedex.Data
+    @using Pokedex.Models
+    @using Pokedex.Services
+    @inject ITeamService TeamService
+    @inject IPokeApiClient Poke
 
-@if (!string.IsNullOrEmpty(alertMsg))
-{
-    <div class="alert alert-@alertType">@alertMsg</div>
-}
+<div class="team-page">
+    <h3 class="mb-3">Meu Time (até 6)</h3>
 
-<div class="card mb-3">
-    <div class="card-header">Adicionar</div>
-    <div class="card-body">
-        <EditForm Model="@newMember" OnValidSubmit="@AddAsync">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
-            <div class="row g-3">
-                <div class="col-md-2">
-                    <label class="form-label">Pokémon (ID)</label>
-                    <InputNumber @bind-Value="newMember.PokemonId" class="form-control" />
-                    <div class="form-text">@AppConstants.MinId-@AppConstants.MaxId</div>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Nível</label>
-                    <InputNumber @bind-Value="newMember.PokemonLevel" class="form-control" />
-                    <div class="form-text">
-                        @AppConstants.MinLv-@AppConstants.MaxLv
+    @if (!string.IsNullOrEmpty(alertMsg))
+    {
+        <div class="alert alert-@alertType">@alertMsg</div>
+    }
+
+    <div class="card mb-3">
+        <div class="card-header">Adicionar</div>
+        <div class="card-body">
+            <EditForm Model="@newMember" OnValidSubmit="@AddAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <label class="form-label">Pokémon (ID)</label>
+                        <InputNumber @bind-Value="newMember.PokemonId" class="form-control" />
+                        <div class="form-text">@AppConstants.MinId-@AppConstants.MaxId</div>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Nível</label>
+                        <InputNumber @bind-Value="newMember.PokemonLevel" class="form-control" />
+                        <div class="form-text">
+                            @AppConstants.MinLv-@AppConstants.MaxLv
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Apelido</label>
+                        <InputText @bind-Value="newMember.Nickname" class="form-control" />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Gênero</label>
+                        <InputSelect @bind-Value="newMember.Gender" class="form-select">
+                            <option>Desconhecido</option>
+                            <option>Masculino</option>
+                            <option>Feminino</option>
+                        </InputSelect>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-primary w-100" type="submit">Adicionar</button>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <label class="form-label">Apelido</label>
-                    <InputText @bind-Value="newMember.Nickname" class="form-control" />
-                </div>
-
-                <div class="col-md-3">
-                    <label class="form-label">Gênero</label>
-                    <InputSelect @bind-Value="newMember.Gender" class="form-select">
-                        <option>Desconhecido</option>
-                        <option>Masculino</option>
-                        <option>Feminino</option>
-                    </InputSelect>
-                </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button class="btn btn-primary w-100" type="submit">Adicionar</button>
-                </div>
-            </div>
-        </EditForm>
+            </EditForm>
+        </div>
     </div>
-</div>
 
-<div class="row g-3">
-    @if (list is null)
-    {
-        <div class="col-12"><div class="alert alert-info">Carregando...</div></div>
-    }
-    else if (list.Count == 0)
-    {
-        <div class="col-12"><div class="alert alert-secondary">Seu time está vazio.</div></div>
-    }
-    else
-    {
-        @foreach (var t in list)
+    <div class="row g-3">
+        @if (list is null)
         {
-            var basic = cache.GetValueOrDefault(t.PokemonId);
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 shadow-sm">
-                    @if (basic is not null)
-                    {
-                        <img src="@basic.ImageUrl" class="pokemonTeam-img" alt="@basic.Name" />
-                    }
-                    else
-                    {
-                        <div class="text-center p-3 text-muted">Sem Imagem</div>
-                    }
-                    <div class="card-body">
-                        <h5 class="card-title">#@t.PokemonId @basic?.Name</h5>
-                        <small class="text-muted">Nível: @t.PokemonLevel</small>
-                        <p class="mb-1">
-                            @if (basic is not null)
-                            {
-                                @foreach (var tp in basic.Types)
+            <div class="col-12"><div class="alert alert-info">Carregando...</div></div>
+        }
+        else if (list.Count == 0)
+        {
+            <div class="col-12"><div class="alert alert-secondary">Seu time está vazio.</div></div>
+        }
+        else
+        {
+            @foreach (var t in list)
+            {
+                var basic = cache.GetValueOrDefault(t.PokemonId);
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm">
+                        @if (basic is not null)
+                        {
+                            <img src="@basic.ImageUrl" class="pokemonTeam-img" alt="@basic.Name" />
+                        }
+                        else
+                        {
+                            <div class="text-center p-3 text-muted">Sem Imagem</div>
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">#@t.PokemonId @basic?.Name</h5>
+                            <small class="text-muted">Nível: @t.PokemonLevel</small>
+                            <p class="mb-1">
+                                @if (basic is not null)
                                 {
-                                    <span class="badge bg-secondary me-1">@tp</span>
+                                    @foreach (var tp in basic.Types)
+                                    {
+                                        <span class="badge bg-secondary me-1">@tp</span>
+                                    }
                                 }
-                            }
-                        </p>
-                        <EditForm Model="@t" OnValidSubmit="@(() => UpdateAsync(t))">
-                            <div class="row g-2">
-                                <div class="col-4">
-                                    <InputNumber @bind-Value="t.PokemonLevel" class="form-control" aria-placeholder="Nível" />
+                            </p>
+                            <EditForm Model="@t" OnValidSubmit="@(() => UpdateAsync(t))">
+                                <div class="row g-2">
+                                    <div class="col-4">
+                                        <InputNumber @bind-Value="t.PokemonLevel" class="form-control" aria-placeholder="Nível" />
+                                    </div>
+                                    <div class="col-7">
+                                        <InputText @bind-Value="t.Nickname" class="form-control" placeholder="Apelido" />
+                                    </div>
+                                    <div class="col-5">
+                                        <InputSelect @bind-Value="t.Gender" class="form-select">
+                                            <option>Desconhecido</option>
+                                            <option>Masculino</option>
+                                            <option>Feminino</option>
+                                        </InputSelect>
+                                    </div>
+                                    <div class="col-12 d-flex gap-2 mt-2">
+                                        <button class="btn btn-sm btn-outline-primary" type="submit">Salvar</button>
+                                        <button class="btn btn-sm btn-outline-danger" type="button" @onclick="() => DeleteAsync(t.Id)">Remover</button>
+                                    </div>
                                 </div>
-                                <div class="col-7">
-                                    <InputText @bind-Value="t.Nickname" class="form-control" placeholder="Apelido" />
-                                </div>
-                                <div class="col-5">
-                                    <InputSelect @bind-Value="t.Gender" class="form-select">
-                                        <option>Desconhecido</option>
-                                        <option>Masculino</option>
-                                        <option>Feminino</option>
-                                    </InputSelect>
-                                </div>
-                                <div class="col-12 d-flex gap-2 mt-2">
-                                    <button class="btn btn-sm btn-outline-primary" type="submit">Salvar</button>
-                                    <button class="btn btn-sm btn-outline-danger" type="button" @onclick="() => DeleteAsync(t.Id)">Remover</button>
-                                </div>
-                            </div>
-                        </EditForm>
+                            </EditForm>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-    }
-</div>
-
-@code {
-    private List<TeamMember>? list;
-    private TeamMember newMember = new()
-    {
-        PokemonLevel=50
-    };
-    private string? alertMsg; private string alertType = "info";
-    private Dictionary<int, PokemonBasic> cache = new();
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadAsync();
-    }
-
-    private async Task LoadAsync()
-    {
-        list = await TeamService.GetAllAsync();
-        foreach (var m in list)
-        {
-            if (!cache.ContainsKey(m.PokemonId))
-            {
-                var b = await Poke.GetBasicAsync(m.PokemonId);
-                if (b is not null) cache[m.PokemonId] = b;
             }
         }
-        StateHasChanged();
-    }
+    </div>
 
-    private async Task AddAsync()
-    {
-        var (ok, error) = await TeamService.AddAsync(newMember);
-        if (ok)
+    @code {
+        private List<TeamMember>? list;
+        private TeamMember newMember = new()
         {
-            Show("success", "Adicionado!");
-            newMember = new TeamMember(){
-                PokemonLevel=50
-            };
+            PokemonLevel=50
+        };
+        private string? alertMsg; private string alertType = "info";
+        private Dictionary<int, PokemonBasic> cache = new();
+
+        protected override async Task OnInitializedAsync()
+        {
             await LoadAsync();
         }
-        else Show("warning", error ?? "Erro ao adicionar.");
+
+        private async Task LoadAsync()
+        {
+            list = await TeamService.GetAllAsync();
+            foreach (var m in list)
+            {
+                if (!cache.ContainsKey(m.PokemonId))
+                {
+                    var b = await Poke.GetBasicAsync(m.PokemonId);
+                    if (b is not null) cache[m.PokemonId] = b;
+                }
+            }
+            StateHasChanged();
+        }
+
+        private async Task AddAsync()
+        {
+            var (ok, error) = await TeamService.AddAsync(newMember);
+            if (ok)
+            {
+                Show("success", "Adicionado!");
+                newMember = new TeamMember(){
+                    PokemonLevel=50
+                };
+                await LoadAsync();
+            }
+            else Show("warning", error ?? "Erro ao adicionar.");
+        }
+
+        private async Task UpdateAsync(TeamMember t)
+        {
+            var (ok, error) = await TeamService.UpdateAsync(t);
+            if (ok) Show("success", "Atualizado!");
+            else Show("warning", error ?? "Erro ao atualizar.");
+        }
+
+        private async Task DeleteAsync(int id)
+        {
+            await TeamService.DeleteAsync(id);
+            Show("success", "Removido.");
+            await LoadAsync();
+        }
+
+        private void Show(string type, string msg) { alertType = type; alertMsg = msg; }
     }
 
-    private async Task UpdateAsync(TeamMember t)
-    {
-        var (ok, error) = await TeamService.UpdateAsync(t);
-        if (ok) Show("success", "Atualizado!");
-        else Show("warning", error ?? "Erro ao atualizar.");
-    }
-
-    private async Task DeleteAsync(int id)
-    {
-        await TeamService.DeleteAsync(id);
-        Show("success", "Removido.");
-        await LoadAsync();
-    }
-
-    private void Show(string type, string msg) { alertType = type; alertMsg = msg; }
-}
+</div>

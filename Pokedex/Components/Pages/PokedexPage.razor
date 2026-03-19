@@ -13,121 +13,123 @@
 @inject IPokeApiClient Poke
 @inject ITeamService Team
 
-<h3 class="mb-3">Pokédex (@AppConstants.MinId-@AppConstants.MaxId)</h3>
+<div class="pokedex-page">
+    <h3 class="mb-3">Pokédex (@AppConstants.MinId-@AppConstants.MaxId)</h3>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <div class="input-group" style="max-width: 380px;">
-        <span class="input-group-text">Filtro</span>
-        <input class="form-control" @bind="filter" @bind:event="oninput" placeholder="Nome contém...">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="input-group" style="max-width: 380px;">
+            <span class="input-group-text">Filtro</span>
+            <input class="form-control" @bind="filter" @bind:event="oninput" placeholder="Nome contém...">
+        </div>
+
+        <div class="btn-group" role="group" aria-label="Paginação">
+            <button class="btn btn-outline-secondary" @onclick="PrevPage" disabled="@(!CanPrev)">◀</button>
+            <span class="btn btn-outline-dark disabled">Página @pageIndex+1 / @TotalPages</span>
+            <button class="btn btn-outline-secondary" @onclick="NextPage" disabled="@(!CanNext)">▶</button>
+        </div>
     </div>
 
-    <div class="btn-group" role="group" aria-label="Paginação">
-        <button class="btn btn-outline-secondary" @onclick="PrevPage" disabled="@(!CanPrev)">◀</button>
-        <span class="btn btn-outline-dark disabled">Página @pageIndex+1 / @TotalPages</span>
-        <button class="btn btn-outline-secondary" @onclick="NextPage" disabled="@(!CanNext)">▶</button>
-    </div>
-</div>
-
-@if (loading)
-{
-    <div class="alert alert-info mb-0">Carregando...</div>
-}
-else
-{
-    <div class="row g-3">
-        @foreach (var p in pageData)
-        {
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card h-100 shadow-sm">
-                    <!-- Imagem oficial (já vem do model via URL official-artwork) -->
-                    <img src="@p.ImageUrl" class="pokedexPage-img" alt="Sprite de @p.Name" loading="lazy" />
-                    <div class="card-body">
-                        <h5 class="card-title mb-1">#@p.Id @p.Name</h5>
-                        <p class="mb-2">
-                            @foreach (var t in p.Types)
-                            {
-                                <span class="badge bg-secondary me-1">@t</span>
-                            }
-                        </p>
-                        <small class="text-muted">Altura: @p.Height • Peso: @p.Weight</small>
-                    </div>
-                    <div class="card-footer bg-white">
-                        <button class="btn btn-sm btn-primary w-100" @onclick="() => AddToTeam(p.Id)">
-                            Adicionar ao Time
-                        </button>
+    @if (loading)
+    {
+        <div class="alert alert-info mb-0">Carregando...</div>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var p in pageData)
+            {
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="card h-100 shadow-sm">
+                        <!-- Imagem oficial (já vem do model via URL official-artwork) -->
+                        <img src="@p.ImageUrl" class="pokedexPage-img" alt="Sprite de @p.Name" loading="lazy" />
+                        <div class="card-body">
+                            <h5 class="card-title mb-1">#@p.Id @p.Name</h5>
+                            <p class="mb-2">
+                                @foreach (var t in p.Types)
+                                {
+                                    <span class="badge bg-secondary me-1">@t</span>
+                                }
+                            </p>
+                            <small class="text-muted">Altura: @p.Height • Peso: @p.Weight</small>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <button class="btn btn-sm btn-primary w-100" @onclick="() => AddToTeam(p.Id)">
+                                Adicionar ao Time
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
-}
-
-@if (!string.IsNullOrEmpty(alertMsg))
-{
-    <div class="alert alert-@alertType mt-3">@alertMsg</div>
-}
-
-@code {
-    // estado da página
-    private string filter = "";
-    private int pageSize = 24;     // quantidade por página
-    private int pageIndex = 0;     // página atual (0-based)
-    private bool loading = true;   // flag de carregamento
-    private List<PokemonBasic> pageData = new(); // dados prontos p/ render
-    private string? alertMsg; private string alertType = "info";
-
-    // helpers de paginação
-    private int TotalPages => (int)Math.Ceiling(AppConstants.MaxId / (double)pageSize);
-    private bool CanPrev => pageIndex > 0;
-    private bool CanNext => pageIndex < TotalPages - 1;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadPage();
+            }
+        </div>
     }
 
-    private async Task LoadPage()
+    @if (!string.IsNullOrEmpty(alertMsg))
     {
-        loading = true;
-        pageData.Clear();
+        <div class="alert alert-@alertType mt-3">@alertMsg</div>
+    }
 
-        // cálculo de faixa da página
-        var start = pageIndex * pageSize + AppConstants.MinId;
-        var end = Math.Min(start + pageSize - 1, AppConstants.MaxId);
+    @code {
+        // estado da página
+        private string filter = "";
+        private int pageSize = 24;     // quantidade por página
+        private int pageIndex = 0;     // página atual (0-based)
+        private bool loading = true;   // flag de carregamento
+        private List<PokemonBasic> pageData = new(); // dados prontos p/ render
+        private string? alertMsg; private string alertType = "info";
 
-        // Busca em LOTE com paralelismo controlado (respeitoso com a PokeAPI)
-        var ids = Enumerable.Range(start, end - start + 1);
-        const int parallel = 8; // bom equilíbrio entre velocidade e fair use
-        foreach (var batch in ids.Chunk(parallel))
+        // helpers de paginação
+        private int TotalPages => (int)Math.Ceiling(AppConstants.MaxId / (double)pageSize);
+        private bool CanPrev => pageIndex > 0;
+        private bool CanNext => pageIndex < TotalPages - 1;
+
+        protected override async Task OnInitializedAsync()
         {
-            var tasks = batch.Select(id => Poke.GetBasicAsync(id));
-            var results = await Task.WhenAll(tasks);
-            pageData.AddRange(results.Where(r => r is not null)!.Select(r => r!));
+            await LoadPage();
         }
 
-        ApplyFilter();
-        loading = false;
-        StateHasChanged();
+        private async Task LoadPage()
+        {
+            loading = true;
+            pageData.Clear();
+
+            // cálculo de faixa da página
+            var start = pageIndex * pageSize + AppConstants.MinId;
+            var end = Math.Min(start + pageSize - 1, AppConstants.MaxId);
+
+            // Busca em LOTE com paralelismo controlado (respeitoso com a PokeAPI)
+            var ids = Enumerable.Range(start, end - start + 1);
+            const int parallel = 8; // bom equilíbrio entre velocidade e fair use
+            foreach (var batch in ids.Chunk(parallel))
+            {
+                var tasks = batch.Select(id => Poke.GetBasicAsync(id));
+                var results = await Task.WhenAll(tasks);
+                pageData.AddRange(results.Where(r => r is not null)!.Select(r => r!));
+            }
+
+            ApplyFilter();
+            loading = false;
+            StateHasChanged();
+        }
+
+        private void ApplyFilter()
+        {
+            if (string.IsNullOrWhiteSpace(filter)) return;
+            var f = filter.Trim();
+            pageData = pageData
+                .Where(p => p.Name.Contains(f, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        private async Task AddToTeam(int id)
+        {
+            var (ok, error) = await Team.AddAsync(new TeamMember { PokemonId = id });
+            if (ok) Show("success", "Adicionado ao time!");
+            else Show("warning", error ?? "Não foi possível adicionar.");
+        }
+
+        private void PrevPage() { if (CanPrev) { pageIndex--; _ = LoadPage(); } }
+        private void NextPage() { if (CanNext) { pageIndex++; _ = LoadPage(); } }
+
+        private void Show(string type, string msg) { alertType = type; alertMsg = msg; }
     }
-
-    private void ApplyFilter()
-    {
-        if (string.IsNullOrWhiteSpace(filter)) return;
-        var f = filter.Trim();
-        pageData = pageData
-            .Where(p => p.Name.Contains(f, StringComparison.OrdinalIgnoreCase))
-            .ToList();
-    }
-
-    private async Task AddToTeam(int id)
-    {
-        var (ok, error) = await Team.AddAsync(new TeamMember { PokemonId = id });
-        if (ok) Show("success", "Adicionado ao time!");
-        else Show("warning", error ?? "Não foi possível adicionar.");
-    }
-
-    private void PrevPage() { if (CanPrev) { pageIndex--; _ = LoadPage(); } }
-    private void NextPage() { if (CanNext) { pageIndex++; _ = LoadPage(); } }
-
-    private void Show(string type, string msg) { alertType = type; alertMsg = msg; }
-}
+</div>
