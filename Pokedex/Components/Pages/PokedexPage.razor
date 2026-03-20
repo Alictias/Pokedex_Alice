@@ -75,9 +75,6 @@
     private int pageIndex = 1;
     private bool loading = true;
 
-    // --- modal ---
-    private bool showModal = false;
-    //private PokemonFull? selectedPokemon;
 
     // --- dados ---
     private List<PokemonBasic> allData = new(); // todos os Pokémon
@@ -150,7 +147,7 @@
         else Show("warning", error ?? "Não foi possível adicionar.");
     }
 
-    // --- modal --- teste para selecionar info dos pokemons
+    // --- modal --- teste para selecionar info dos pokemons. Abandonado por falta de tempo
     @* private async Task OpenModal(int id)
     {
         selectedPokemon = await Poke.GetFullAsync(id); // método que busca detalhes completos
